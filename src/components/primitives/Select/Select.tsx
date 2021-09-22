@@ -13,7 +13,8 @@ import { useFormControl } from '../../composites/FormControl';
 import { extractInObject, stylingProps } from '../../../theme/tools/utils';
 import { ChevronDownIcon } from '../Icon/Icons';
 import type { IButtonProps } from '../Button/types';
-import { ScrollView } from '../../basic/ScrollView';
+import { FlatList } from '../../basic/FlatList';
+import SelectItem from './SelectItem';
 
 const unstyledSelecWebtStyles = {
   width: '100%',
@@ -179,18 +180,21 @@ const Select = (
           </Pressable>
           <Actionsheet isOpen={isOpen} onClose={handleClose}>
             <Actionsheet.Content {..._actionSheetContent}>
-              <ScrollView width="100%">
-                <SelectContext.Provider
-                  value={{
-                    onValueChange: setValue,
-                    selectedValue: value,
-                    _selectedItem: _selectedItem ?? {},
-                    _item: _item ?? {},
-                  }}
-                >
-                  {children}
-                </SelectContext.Provider>
-              </ScrollView>
+              <SelectContext.Provider
+                value={{
+                  onValueChange: setValue,
+                  selectedValue: value,
+                  _selectedItem: _selectedItem ?? {},
+                  _item: _item ?? {},
+                }}
+              >
+                <FlatList
+                  data={React.Children.map(children, (i) => i.props)}
+                  renderItem={({ item }) => <SelectItem {...item} />}
+                  keyExtractor={(item) => item.value}
+                  width="100%"
+                />
+              </SelectContext.Provider>
             </Actionsheet.Content>
           </Actionsheet>
         </>
